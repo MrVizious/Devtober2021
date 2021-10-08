@@ -14,6 +14,9 @@ public class PlayerMovement : MonoBehaviour
     public float horizontalAcceleration = 10f;
     [Range(0f, 100f)]
     public float horizontalAirAcceleration = 10f;
+    Rigidbody2D rb;
+    Vector2 playerInput;
+    Vector2 velocity;
 
     [Header("JUMP")]
     // Jump Variables
@@ -28,7 +31,7 @@ public class PlayerMovement : MonoBehaviour
     private int timesJumpedOnAir = 0;
     private float timeSinceLastJump = float.MaxValue;
 
-    [Header("Jump tricks")]
+    [Header("JUMP TRICKS")]
     [Range(0f, 0.5f)]
     public float jumpTimeBufferBeforeGrounded = 0.15f;
     [Range(0f, 0.5f)]
@@ -48,12 +51,12 @@ public class PlayerMovement : MonoBehaviour
     [Range(0f, 90f)]
     public float maxSlopeAngle = 33f;
 
-    Vector2 playerInput;
-    Vector2 velocity;
+    [Header("LADDER")]
+    [SerializeField]
+    private bool usingLadder = false;
 
 
 
-    Rigidbody2D rb;
 
     private void Start() {
         rb = GetComponent<Rigidbody2D>();
@@ -111,8 +114,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void UpdateJump() {
 
+        if (usingLadder)
+        {
+        }
         // Reset number of jumps
-        if (grounded)
+        else if (grounded)
         {
             timesJumpedOnAir = 0;
             onAirTime = 0f;
@@ -194,11 +200,26 @@ public class PlayerMovement : MonoBehaviour
         return false;
     }
 
-    private void OnValidate() {
-        maxExtendedJumpTime = SolveQuadratic((float)0.5 * Physics2D.gravity.y, jumpSpeed, -maxExtendedJumpHeight);
-        maxExtendedJumpTime = maxExtendedJumpHeight / jumpSpeed;
+    private void UseLadder() {
+        usingLadder = true;
+        rb.gravityScale = 0f;
+        rb.velocity = Vector2.zero;
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("LadderTop"), true);
     }
 
+    private void ReleaseLadder() {
+        usingLadder = false;
+        rb.gravityScale = 1f;
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("LadderTop"), false);
+    }
+
+    public void ToggleLadder(InputAction.CallbackContext context) {
+        if (usingLadder)
+        {
+            ReleaseLadder();
+        }
+        else UseLadder();
+    }
 
 
 
