@@ -807,7 +807,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 950308715}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.1564249, y: -0.83560467, z: -0.4119662}
+  m_LocalPosition: {x: -0.6594863, y: -0.7176854, z: -0.4119662}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 311325052}
@@ -936,9 +936,9 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_GravityScale: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: d66459e0651a2739c86327322e21c7fc, type: 2}
   m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 1
@@ -952,7 +952,7 @@ CircleCollider2D:
   m_GameObject: {fileID: 1532340611}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: d66459e0651a2739c86327322e21c7fc, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -1019,7 +1019,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1532340611}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.196, y: 0.195, z: 0}
+  m_LocalPosition: {x: 2.196, y: 0, z: 0}
   m_LocalScale: {x: 0.4, y: 0.4, z: 1}
   m_Children:
   - {fileID: 1197851529}
@@ -1038,19 +1038,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33687eee629343614a28e3e8cff442a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  horizontalSpeed: 20
-  horizontalAcceleration: 5
-  horizontalAirAcceleration: 10
+  maxHeightReached: 0
+  horSpeed: 0
+  horizontalSpeed: 3
+  horizontalAcceleration: 20
+  horizontalAirAcceleration: 3
   jumpHeight: 1
-  maxNumberOfAirJumps: 1
+  jumpSpeed: 0
+  maxExtendedJumpTime: NaN
+  maxNumberOfAirJumps: 0
   timesJumpedOnAir: 0
+  timeSinceLastJump: 3.4028235e+38
   jumpTimeBufferBeforeGrounded: 0.15
   jumpTimeBufferCoyoteTime: 0.05
-  maxExtendedJumpTime: 0.5
+  maxExtendedJumpHeight: 0
   groundLayers:
     serializedVersion: 2
     m_Bits: 0
+  timeSinceJumpPressed: 3.4028235e+38
   grounded: 1
+  maxSlopeAngle: 33
 --- !u!114 &1532340617
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -19,22 +19,25 @@ public class PlayerMovement : MonoBehaviour
     // Jump Variables
     [Range(0f, 10f)]
     public float jumpHeight = 2f;
+    [Range(0f, 5f)]
+    public float maxExtendedJumpHeight = 0.3f;
     private float jumpSpeed;
     private float maxExtendedJumpTime;
     [Range(0f, 4f)]
     public int maxNumberOfAirJumps = 1;
-    public int timesJumpedOnAir = 0;
-    [SerializeField]
+    private int timesJumpedOnAir = 0;
     private float timeSinceLastJump = float.MaxValue;
+
+    [Header("Jump tricks")]
+    [Range(0f, 0.5f)]
     public float jumpTimeBufferBeforeGrounded = 0.15f;
+    [Range(0f, 0.5f)]
     public float jumpTimeBufferCoyoteTime = 0.05f;
-    public float maxExtendedJumpHeight = 0.3f;
     public LayerMask groundLayers;
 
     // Jump button variables
     private bool jumpButtonJustPressed = false;
     private bool jumpButtonPressed = false;
-    [SerializeField]
     private float timeSinceJumpPressed = float.MaxValue;
     private float onAirTime = 0f;
 
@@ -42,8 +45,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private bool grounded = true;
 
-    [Range(0f, 1f)]
-    public float maxSlopeAngle = 0.9f;
+    [Range(0f, 90f)]
+    public float maxSlopeAngle = 33f;
 
     Vector2 playerInput;
     Vector2 velocity;
@@ -54,10 +57,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start() {
         rb = GetComponent<Rigidbody2D>();
-        jumpSpeed = Mathf.Sqrt(-2f * Physics.gravity.y * jumpHeight);
-        maxExtendedJumpTime = (-jumpSpeed + Mathf.Sqrt(
-                        jumpSpeed * jumpSpeed - 4 * (-maxExtendedJumpHeight) * Physics.gravity.y)
-                        ) / 2 * (-maxExtendedJumpHeight);
+        jumpSpeed = Mathf.Sqrt(-2f * Physics2D.gravity.y * (jumpHeight + 0.05f * maxExtendedJumpHeight)) * (1 / 0.98f);
+        maxExtendedJumpTime = SolveQuadratic((float)0.5 * Physics2D.gravity.y, jumpSpeed, -maxExtendedJumpHeight);
 
         maxHeightReached = transform.position.y;
     }
@@ -145,14 +146,14 @@ public class PlayerMovement : MonoBehaviour
                 timesJumpedOnAir++;
                 Debug.Log("Air jump");
             }
+            else if (timeSinceLastJump <= maxExtendedJumpTime && timeSinceJumpPressed == timeSinceLastJump && jumpButtonPressed)
+            {
+                Debug.Log("Higher Jump");
+                AddJumpSpeed();
+            }
             onAirTime += Time.deltaTime;
         }
 
-        if (timeSinceLastJump < maxExtendedJumpTime && jumpButtonPressed)
-        {
-            Debug.Log("Higher Jump");
-            AddJumpSpeed();
-        }
 
         // Reset pressed button variable
         jumpButtonJustPressed = false;
@@ -188,8 +189,35 @@ public class PlayerMovement : MonoBehaviour
         for (int i = 0; i < collision.contactCount; i++)
         {
             Vector3 normal = collision.GetContact(i).normal;
-            if (normal.y >= maxSlopeAngle) return true;
+            if (normal.y >= Mathf.Cos(maxSlopeAngle)) return true;
         }
         return false;
+    }
+
+    private void OnValidate() {
+        maxExtendedJumpTime = SolveQuadratic((float)0.5 * Physics2D.gravity.y, jumpSpeed, -maxExtendedJumpHeight);
+        maxExtendedJumpTime = maxExtendedJumpHeight / jumpSpeed;
+    }
+
+
+
+
+    // quadratic equation is a second order of polynomial equation in a single variable 
+    // x = [ -b +/- sqrt(b^2 - 4ac) ] / 2a
+    public static float SolveQuadratic(float a_value, float b_value, float c_value) {
+        float sqrtpart = b_value * b_value - 4 * a_value * c_value;
+        float x1, x2;
+        if (sqrtpart > 0)
+        {
+            x1 = (-b_value + Mathf.Sqrt(sqrtpart)) / (2 * a_value);
+            x2 = (-b_value - Mathf.Sqrt(sqrtpart)) / (2 * a_value);
+            return Mathf.Min(x1, x2);
+        }
+        else if (sqrtpart == 0)
+        {
+            return (-b_value + Mathf.Sqrt(sqrtpart)) / (2 * a_value);
+        }
+        return float.NaN;
+
     }
 }
