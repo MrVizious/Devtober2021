@@ -54,6 +54,8 @@ public class PlayerMovement : MonoBehaviour
     [Header("LADDER")]
     [SerializeField]
     private bool usingLadder = false;
+    [SerializeField]
+    private GameObject ladderBehind;
 
 
 
@@ -200,11 +202,21 @@ public class PlayerMovement : MonoBehaviour
         return false;
     }
 
+    public void UseLadder(InputAction.CallbackContext context) {
+        if (context.performed)
+        {
+            UseLadder();
+        }
+    }
     private void UseLadder() {
-        usingLadder = true;
-        rb.gravityScale = 0f;
-        rb.velocity = Vector2.zero;
-        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("LadderTop"), true);
+        if (ladderBehind != null)
+        {
+            usingLadder = true;
+            rb.gravityScale = 0f;
+            rb.velocity = Vector2.zero;
+            Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("LadderTop"), true);
+            transform.position = new Vector2(ladderBehind.transform.position.x, transform.position.y);
+        }
     }
 
     private void ReleaseLadder() {
@@ -219,6 +231,23 @@ public class PlayerMovement : MonoBehaviour
             ReleaseLadder();
         }
         else UseLadder();
+    }
+
+    private void OnTriggerEnter2D(Collider2D other) {
+        if (other.gameObject.tag.Equals("Ladder"))
+        {
+            ladderBehind = other.gameObject;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other) {
+        if (other.gameObject.tag.Equals("Ladder"))
+        {
+            if (ladderBehind != null && ladderBehind == other.gameObject)
+            {
+                ladderBehind = null;
+            }
+        }
     }
 
 
