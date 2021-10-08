@@ -52,10 +52,11 @@ public class PlayerMovement : MonoBehaviour
     public float maxSlopeAngle = 33f;
 
     [Header("LADDER")]
+    public float ladderSpeed = 2f;
     [SerializeField]
     private bool usingLadder = false;
-    [SerializeField]
     private GameObject ladderBehind;
+
 
 
 
@@ -90,6 +91,7 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate() {
         Movement();
         UpdateJump();
+        UpdateLadder();
         if (transform.position.y > maxHeightReached) maxHeightReached = transform.position.y;
     }
 
@@ -114,13 +116,14 @@ public class PlayerMovement : MonoBehaviour
         rb.velocity = velocity;
     }
 
+    /**********************
+    ***     JUMPING     ***
+    ***********************/
+
     private void UpdateJump() {
 
-        if (usingLadder)
-        {
-        }
         // Reset number of jumps
-        else if (grounded)
+        if (grounded)
         {
             timesJumpedOnAir = 0;
             onAirTime = 0f;
@@ -159,9 +162,14 @@ public class PlayerMovement : MonoBehaviour
                 Debug.Log("Higher Jump");
                 AddJumpSpeed();
             }
+            else if (usingLadder && jumpButtonJustPressed)
+            {
+                ReleaseLadder();
+                Jump();
+            }
+
             onAirTime += Time.deltaTime;
         }
-
 
         // Reset pressed button variable
         jumpButtonJustPressed = false;
@@ -172,6 +180,7 @@ public class PlayerMovement : MonoBehaviour
     private void Jump() {
         grounded = false;
         AddJumpSpeed();
+        ReleaseLadder();
         timeSinceLastJump = 0f;
         timeSinceJumpPressed = 0f;
     }
@@ -202,6 +211,10 @@ public class PlayerMovement : MonoBehaviour
         return false;
     }
 
+    /**********************
+    ***     LADDERS     ***
+    ***********************/
+
     public void UseLadder(InputAction.CallbackContext context) {
         if (context.performed)
         {
@@ -209,7 +222,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
     private void UseLadder() {
-        if (ladderBehind != null)
+        if (!usingLadder && ladderBehind != null)
         {
             usingLadder = true;
             rb.gravityScale = 0f;
@@ -220,9 +233,12 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void ReleaseLadder() {
-        usingLadder = false;
-        rb.gravityScale = 1f;
-        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("LadderTop"), false);
+        if (usingLadder)
+        {
+            usingLadder = false;
+            rb.gravityScale = 1f;
+            Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("LadderTop"), false);
+        }
     }
 
     public void ToggleLadder(InputAction.CallbackContext context) {
@@ -231,6 +247,18 @@ public class PlayerMovement : MonoBehaviour
             ReleaseLadder();
         }
         else UseLadder();
+    }
+
+    private void UpdateLadder() {
+        if (Mathf.Abs(playerInput.y) >= Mathf.Epsilon)
+        {
+            UseLadder();
+        }
+        else if (Mathf.Abs(playerInput.x) >= Mathf.Epsilon)
+        {
+            ReleaseLadder();
+        }
+        if (usingLadder) rb.velocity = new Vector2(rb.velocity.x, ladderSpeed * playerInput.y);
     }
 
     private void OnTriggerEnter2D(Collider2D other) {
@@ -246,6 +274,7 @@ public class PlayerMovement : MonoBehaviour
             if (ladderBehind != null && ladderBehind == other.gameObject)
             {
                 ladderBehind = null;
+                ReleaseLadder();
             }
         }
     }
