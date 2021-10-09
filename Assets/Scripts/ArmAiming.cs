@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class ArmAiming : MonoBehaviour
@@ -15,11 +16,29 @@ public class ArmAiming : MonoBehaviour
 
     public LayerMask obstacleLayers;
 
+    public GameObject bullet;
+    private LineRenderer line;
+
+    private void Start() {
+        line = GetComponent<LineRenderer>();
+    }
+
+    private void Update() {
+        DrawLine();
+    }
+
     private void OnValidate() {
         transform.right = new Vector2(Mathf.Cos(aimAngle * Mathf.Deg2Rad), Mathf.Sin(aimAngle * Mathf.Deg2Rad));
         Vector3[] newPoints = GetParabolaPoints();
         GetComponent<LineRenderer>().positionCount = newPoints.Length;
         GetComponent<LineRenderer>().SetPositions(newPoints);
+    }
+
+    private void DrawLine() {
+        transform.right = new Vector2(Mathf.Cos(aimAngle * Mathf.Deg2Rad), Mathf.Sin(aimAngle * Mathf.Deg2Rad));
+        Vector3[] newPoints = GetParabolaPoints();
+        line.positionCount = newPoints.Length;
+        line.SetPositions(newPoints);
     }
 
     private Vector3[] GetParabolaPoints() {
@@ -44,4 +63,25 @@ public class ArmAiming : MonoBehaviour
         return points.ToArray();
     }
 
+    public void Throw() {
+        GameObject newBullet = Instantiate(bullet, transform.position, Quaternion.identity);
+        Vector2 angle = new Vector2(Mathf.Cos(aimAngle * Mathf.Deg2Rad), Mathf.Sin(aimAngle * Mathf.Deg2Rad));
+        newBullet.GetComponent<Rigidbody2D>().velocity = angle * force;
+    }
+
+
+}
+
+[CustomEditor(typeof(ArmAiming))]
+public class ArmAimingInpector : Editor
+{
+    public override void OnInspectorGUI() {
+        DrawDefaultInspector();
+
+        ArmAiming myScript = (ArmAiming)target;
+        if (GUILayout.Button("Thow"))
+        {
+            myScript.Throw();
+        }
+    }
 }
