@@ -17,21 +17,14 @@ public class ArmAiming : MonoBehaviour
     public LayerMask obstacleLayers;
 
     public GameObject bullet;
-    private LineRenderer line;
-
-    private void Start() {
-        line = GetComponent<LineRenderer>();
-    }
+    public LineRenderer line;
 
     private void Update() {
         DrawLine();
     }
 
     private void OnValidate() {
-        transform.right = new Vector2(Mathf.Cos(aimAngle * Mathf.Deg2Rad), Mathf.Sin(aimAngle * Mathf.Deg2Rad));
-        Vector3[] newPoints = GetParabolaPoints();
-        GetComponent<LineRenderer>().positionCount = newPoints.Length;
-        GetComponent<LineRenderer>().SetPositions(newPoints);
+        DrawLine();
     }
 
     private void DrawLine() {
