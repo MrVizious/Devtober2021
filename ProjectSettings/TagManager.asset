@@ -15,7 +15,7 @@ TagManager:
   - LadderTop
   - Ground
   - Obstacle
-  - 
+  - Enemy
   - 
   - 
   - 
@@ -41,4 +41,19 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 3942979013
+    locked: 0
+  - name: Enemy
+    uniqueID: 1171929431
+    locked: 0
+  - name: Player
+    uniqueID: 1204580979
+    locked: 0
+  - name: Particles
+    uniqueID: 1616483477
+    locked: 0
+  - name: Foreground
+    uniqueID: 846023811
     locked: 0
