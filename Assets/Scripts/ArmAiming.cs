@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 public class ArmAiming : MonoBehaviour
@@ -65,6 +67,7 @@ public class ArmAiming : MonoBehaviour
 
 }
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(ArmAiming))]
 public class ArmAimingInpector : Editor
 {
@@ -78,3 +81,4 @@ public class ArmAimingInpector : Editor
         }
     }
 }
+#endif

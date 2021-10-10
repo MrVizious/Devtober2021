@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using PathCreation;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 public class RotatingOrbs : MonoBehaviour
@@ -10,17 +12,23 @@ public class RotatingOrbs : MonoBehaviour
     public PathCreator path;
 
     [Range(0, 10)]
-    public int numberOfOrbs = 5;
+    public int initialNumberOfOrbs = 0;
 
     [Range(0f, 5f)]
     public float rotationSpeed = 0.2f;
+
+    [Range(0, 1)]
+    public float aPoint, bPoint;
+
+    private Vector3 posA, posB;
+
     private float offset = 1f;
 
     private List<GameObject> orbs;
 
     private void Start() {
         orbs = new List<GameObject>();
-        AddOrbs(numberOfOrbs);
+        AddOrbs(initialNumberOfOrbs);
     }
 
     private void Update() {
@@ -31,21 +39,20 @@ public class RotatingOrbs : MonoBehaviour
             float currentTime = (float)i / (float)orbs.Count + offset;
             currentTime %= 1f;
             orbs[i].transform.position = path.path.GetPointAtTime(currentTime);
-            if (currentTime >= 0.75f || currentTime <= 0.25f)
+            if (currentTime >= aPoint && currentTime <= bPoint)
             {
-                orbs[i].GetComponent<SpriteRenderer>().sortingOrder = 1;
+                orbs[i].GetComponent<SpriteRenderer>().sortingOrder = -1;
             }
             else
             {
-                Debug.Log("Green");
-                orbs[i].GetComponent<SpriteRenderer>().sortingOrder = -1;
+                orbs[i].GetComponent<SpriteRenderer>().sortingOrder = 1;
             }
         }
     }
 
     public void AddOrb() {
         orbs.Add(Instantiate(orbPrebaf, path.path.GetPointAtTime(0), Quaternion.identity));
-        offset = 0.25f;
+
     }
 
     public void AddOrbs(int numberOfOrbsToAdd) {
@@ -69,8 +76,20 @@ public class RotatingOrbs : MonoBehaviour
             RemoveOrb();
         }
     }
+
+    private void OnDrawGizmos() {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(posA, 0.1f);
+        Gizmos.DrawSphere(posB, 0.1f);
+    }
+
+    private void OnValidate() {
+        posA = path.path.GetPointAtTime(aPoint);
+        posB = path.path.GetPointAtTime(bPoint);
+    }
 }
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(RotatingOrbs))]
 public class RotatingOrbsInpector : Editor
 {
@@ -88,3 +107,4 @@ public class RotatingOrbsInpector : Editor
         }
     }
 }
+#endif
