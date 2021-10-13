@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -7,11 +8,17 @@ using UnityEngine;
 
 public class ArmAiming : MonoBehaviour
 {
+    public float minAngle = -75f, maxAngle = 75f;
     [Range(-75, 75)]
     public float aimAngle = 0f;
+    public float minForce = 1f, maxForce = 30f;
     [Range(1, 30)]
     public float force = 1f;
-    [Range(2, 150)]
+    private Vector2 deltaInput = Vector2.zero;
+
+
+
+    [Range(2, 500)]
     public int numberOfPoints;
     [Range(0.5f, 10f)]
     public float previewTime = 4f;
@@ -21,7 +28,10 @@ public class ArmAiming : MonoBehaviour
     public GameObject bullet;
     public LineRenderer line;
 
+    public float angleChange = 5f, forceChange = 10f;
+
     private void Update() {
+        AdjustAngle();
         DrawLine();
     }
 
@@ -49,7 +59,7 @@ public class ArmAiming : MonoBehaviour
             Vector2 currentVelocity = force * angle + Vector2.up * Physics2D.gravity.y * instant;
 
 
-            RaycastHit2D hit = Physics2D.Raycast((Vector2)newPoint, currentVelocity, 0.01f, obstacleLayers);
+            RaycastHit2D hit = Physics2D.Raycast((Vector2)newPoint, currentVelocity.normalized, 0.01f, obstacleLayers);
             if (hit.collider != null)
             {
                 break;
@@ -58,14 +68,29 @@ public class ArmAiming : MonoBehaviour
         return points.ToArray();
     }
 
+    public void InputThrow(InputAction.CallbackContext context) {
+        if (context.started && !context.canceled)
+        {
+            Throw();
+        }
+    }
     public void Throw() {
         GameObject newBullet = Instantiate(bullet, transform.position, Quaternion.identity);
         Vector2 angle = new Vector2(Mathf.Cos(aimAngle * Mathf.Deg2Rad), Mathf.Sin(aimAngle * Mathf.Deg2Rad));
         newBullet.GetComponent<Rigidbody2D>().velocity = angle * force;
     }
 
+    public void InputAngle(InputAction.CallbackContext context) {
+        deltaInput = context.ReadValue<Vector2>();
+    }
+
+    private void AdjustAngle() {
+        force = Mathf.Clamp(force + deltaInput.x * forceChange * Time.deltaTime, minForce, maxForce);
+        aimAngle = Mathf.Clamp(aimAngle + deltaInput.y * angleChange * Time.deltaTime, minAngle, maxAngle);
+    }
 
 }
+
 
 #if UNITY_EDITOR
 [CustomEditor(typeof(ArmAiming))]
