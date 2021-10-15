@@ -12,7 +12,7 @@ public class ArmAiming : MonoBehaviour
     [Range(-75, 75)]
     public float aimAngle = 0f;
     public float minForce = 1f, maxForce = 30f;
-    [Range(1, 30)]
+    [Range(-30, 30)]
     public float force = 1f;
     private Vector2 deltaInput = Vector2.zero;
 
@@ -82,12 +82,24 @@ public class ArmAiming : MonoBehaviour
     }
 
     public void InputAngle(InputAction.CallbackContext context) {
-        deltaInput = context.ReadValue<Vector2>();
+        deltaInput = context.ReadValue<Vector2>().normalized;
     }
 
     private void AdjustAngle() {
-        force = Mathf.Clamp(force + deltaInput.x * forceChange * Time.deltaTime, minForce, maxForce);
-        aimAngle = Mathf.Clamp(aimAngle + deltaInput.y * angleChange * Time.deltaTime, minAngle, maxAngle);
+        force = force + deltaInput.x * forceChange * Time.deltaTime;
+        if (force < minForce && force > -minForce)
+        {
+            Debug.Log("Angle change");
+            transform.localPosition = new Vector2(Mathf.Abs(transform.localPosition.x) * Mathf.Sign(-force), transform.localPosition.y);
+            GetComponent<SpriteRenderer>().flipX = force > 0f;
+            force = -minForce * Mathf.Sign(force);
+            aimAngle = -aimAngle;
+        }
+        force = Mathf.Clamp(force, -maxForce, maxForce);
+        aimAngle = aimAngle + deltaInput.y * angleChange * Time.deltaTime * force;
+        //aimAngle = Mathf.Clamp(aimAngle + deltaInput.y * angleChange * Time.deltaTime * force, minAngle, maxAngle);
+        aimAngle %= 360;
+        aimAngle = Mathf.Clamp(aimAngle, minAngle, maxAngle);
     }
 
 }

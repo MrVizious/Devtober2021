@@ -5,8 +5,14 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "PlayerData", menuName = "ScriptableObjects/PlayerData", order = 0)]
 public class PlayerData : ScriptableObject
 {
-    public bool isAiming = false;
     public int maxNumberOfOrbs = 0;
+    public bool facingRight = true;
+
+
+    public bool isAiming = true;
+
+
+
     private void Awake() {
         isAiming = false;
     }

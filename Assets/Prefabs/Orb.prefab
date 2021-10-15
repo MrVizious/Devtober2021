@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2736867363827537967}
   - component: {fileID: 2189699855558367208}
   - component: {fileID: 8655558294256105059}
-  m_Layer: 2
+  m_Layer: 10
   m_Name: Orb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -191,7 +191,7 @@ GameObject:
   - component: {fileID: 5136521046285227992}
   - component: {fileID: 5604721503218355758}
   - component: {fileID: 1958166952570360349}
-  m_Layer: 2
+  m_Layer: 10
   m_Name: ParticleOrb
   m_TagString: Untagged
   m_Icon: {fileID: 0}

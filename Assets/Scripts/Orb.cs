@@ -28,7 +28,6 @@ public class Orb : MonoBehaviour
 
             if (hit.collider != null && hit.distance < floatingHeight)
             {
-                Debug.Log(hit.collider.gameObject.name);
                 float proportionalHeight = (floatingHeight - hit.distance) / floatingHeight;
                 Vector2 appliedHoverForce = Vector3.up * (proportionalHeight * buoyancy - Mathf.PerlinNoise(0f, Time.time + transform.position.x));
                 rb.drag = Mathf.PerlinNoise(0f, Time.time + transform.position.x) * 0.4f;
