@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2736867363827537967}
   - component: {fileID: 2189699855558367208}
   - component: {fileID: 8655558294256105059}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Orb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,6 +98,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 942bab2827ba3878c962c2ae3dfe1da6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  thrown: 0
+  floatingHeight: 1
+  buoyancy: 0
+  scale: 0
 --- !u!114 &8655558294256105059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -187,7 +191,7 @@ GameObject:
   - component: {fileID: 5136521046285227992}
   - component: {fileID: 5604721503218355758}
   - component: {fileID: 1958166952570360349}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: ParticleOrb
   m_TagString: Untagged
   m_Icon: {fileID: 0}

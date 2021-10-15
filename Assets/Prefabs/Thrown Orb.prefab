@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8655558294256105059}
   - component: {fileID: 4040992029522143622}
   - component: {fileID: 8174745992338104563}
-  m_Layer: 2
+  m_Layer: 10
   m_Name: Thrown Orb
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -230,7 +230,7 @@ GameObject:
   - component: {fileID: 5136521046285227992}
   - component: {fileID: 5604721503218355758}
   - component: {fileID: 1958166952570360349}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: ParticleOrb
   m_TagString: Untagged
   m_Icon: {fileID: 0}

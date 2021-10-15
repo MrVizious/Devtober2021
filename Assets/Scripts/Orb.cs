@@ -24,10 +24,11 @@ public class Orb : MonoBehaviour
     private void FixedUpdate() {
         if (thrown && Mathf.Abs(rb.velocity.x) <= Mathf.Epsilon)
         {
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, -Vector2.up);
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, -Vector2.up, floatingHeight, ~(1 << LayerMask.NameToLayer("Orb")));
 
             if (hit.collider != null && hit.distance < floatingHeight)
             {
+                Debug.Log(hit.collider.gameObject.name);
                 float proportionalHeight = (floatingHeight - hit.distance) / floatingHeight;
                 Vector2 appliedHoverForce = Vector3.up * (proportionalHeight * buoyancy - Mathf.PerlinNoise(0f, Time.time + transform.position.x));
                 rb.drag = Mathf.PerlinNoise(0f, Time.time + transform.position.x) * 0.4f;
