@@ -1274,7 +1274,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   orbPrebaf: {fileID: 6171923362754708151, guid: 6003b5b187c284584b87e3b0977a5bc8, type: 3}
   path: {fileID: 644110378}
-  initialNumberOfOrbs: 0
+  initialNumberOfOrbs: 5
   rotationSpeed: 0.2
   aPoint: 0.387
   bPoint: 0.812

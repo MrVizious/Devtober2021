@@ -89,15 +89,13 @@ public class ArmAiming : MonoBehaviour
         force = force + deltaInput.x * forceChange * Time.deltaTime;
         if (force < minForce && force > -minForce)
         {
-            Debug.Log("Angle change");
-            transform.localPosition = new Vector2(Mathf.Abs(transform.localPosition.x) * Mathf.Sign(-force), transform.localPosition.y);
-            GetComponent<SpriteRenderer>().flipX = force > 0f;
             force = -minForce * Mathf.Sign(force);
             aimAngle = -aimAngle;
+            transform.localPosition = new Vector2(Mathf.Abs(transform.localPosition.x) * Mathf.Sign(force), transform.localPosition.y);
+            GetComponent<SpriteRenderer>().flipX = force < 0f;
         }
         force = Mathf.Clamp(force, -maxForce, maxForce);
         aimAngle = aimAngle + deltaInput.y * angleChange * Time.deltaTime * force;
-        //aimAngle = Mathf.Clamp(aimAngle + deltaInput.y * angleChange * Time.deltaTime * force, minAngle, maxAngle);
         aimAngle %= 360;
         aimAngle = Mathf.Clamp(aimAngle, minAngle, maxAngle);
     }
