@@ -31,6 +31,7 @@ public class ArmAiming : MonoBehaviour
     public float angleChange = 5f, forceChange = 10f;
 
     private void Update() {
+        Cursor.lockState = CursorLockMode.Locked;
         AdjustAngle();
         DrawLine();
     }
@@ -69,7 +70,7 @@ public class ArmAiming : MonoBehaviour
     }
 
     public void InputThrow(InputAction.CallbackContext context) {
-        if (context.started && !context.canceled)
+        if (context.started)
         {
             Throw();
         }
