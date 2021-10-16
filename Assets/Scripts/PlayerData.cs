@@ -8,15 +8,14 @@ public class PlayerData : ScriptableObject
 {
     public int maxNumberOfOrbs = 0, currentNumberOfOrbs;
     public UnityEvent onOrbRemoved, onOrbAdded;
-    public bool facingRight = true;
-
-
-    public bool isAiming = true;
-
+    public float playerBrightness = 1f;
+    public float brightnessThreshold = 0.61f;
+    public UnityEvent onBrightnessDown, onBrightnessUp;
 
 
     private void OnEnable() {
         currentNumberOfOrbs = maxNumberOfOrbs;
+        playerBrightness = 1f;
     }
 
     public bool RemoveOrb() {
@@ -43,5 +42,19 @@ public class PlayerData : ScriptableObject
             return true;
         }
         return false;
+    }
+
+    public void SetPlayerBrightness(float newLevel) {
+        if (playerBrightness < brightnessThreshold && newLevel >= brightnessThreshold)
+        {
+            onBrightnessUp.Invoke();
+            Debug.Log("Brightness up!");
+        }
+        else if (playerBrightness >= brightnessThreshold && newLevel < brightnessThreshold)
+        {
+            onBrightnessDown.Invoke();
+            Debug.Log("Brightness down!");
+        }
+        playerBrightness = newLevel;
     }
 }
