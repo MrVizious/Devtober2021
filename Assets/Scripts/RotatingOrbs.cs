@@ -11,9 +11,7 @@ public class RotatingOrbs : MonoBehaviour
     public GameObject orbPrebaf;
     public PathCreator path;
 
-    [Range(0, 10)]
-    public int initialNumberOfOrbs = 0;
-
+    public PlayerData data;
     [Range(0f, 5f)]
     public float rotationSpeed = 0.2f;
 
@@ -28,7 +26,9 @@ public class RotatingOrbs : MonoBehaviour
 
     private void Start() {
         orbs = new List<GameObject>();
-        AddOrbs(initialNumberOfOrbs);
+        SpawnOrbs(data.currentNumberOfOrbs);
+        data.onOrbAdded.AddListener(SpawnOrb);
+        data.onOrbRemoved.AddListener(DespawnOrb);
     }
 
     private void Update() {
@@ -51,18 +51,24 @@ public class RotatingOrbs : MonoBehaviour
     }
 
     public void AddOrb() {
-        orbs.Add(Instantiate(orbPrebaf, path.path.GetPointAtTime(0), Quaternion.identity));
-
+        data.AddOrb();
+    }
+    public void RemoveOrb() {
+        data.RemoveOrb();
     }
 
-    public void AddOrbs(int numberOfOrbsToAdd) {
+    public void SpawnOrb() {
+        orbs.Add(Instantiate(orbPrebaf, path.path.GetPointAtTime(0), Quaternion.identity));
+    }
+
+    public void SpawnOrbs(int numberOfOrbsToAdd) {
         for (int i = 0; i < numberOfOrbsToAdd; i++)
         {
-            AddOrb();
+            SpawnOrb();
         }
     }
 
-    public void RemoveOrb() {
+    public void DespawnOrb() {
         if (orbs.Count > 0)
         {
             GameObject orb = orbs[0];
@@ -70,10 +76,10 @@ public class RotatingOrbs : MonoBehaviour
             Destroy(orb);
         }
     }
-    public void RemoveOrbs(int numberOfOrbsToRemove) {
+    public void DespawnOrbs(int numberOfOrbsToRemove) {
         for (int i = 0; i < numberOfOrbsToRemove; i++)
         {
-            RemoveOrb();
+            DespawnOrb();
         }
     }
 
@@ -97,13 +103,13 @@ public class RotatingOrbsInpector : Editor
         DrawDefaultInspector();
 
         RotatingOrbs myScript = (RotatingOrbs)target;
-        if (GUILayout.Button("Add orb"))
+        if (GUILayout.Button("Spawn orb"))
         {
-            myScript.AddOrb();
+            myScript.SpawnOrb();
         }
-        if (GUILayout.Button("Remove orb"))
+        if (GUILayout.Button("Despawn orb"))
         {
-            myScript.RemoveOrb();
+            myScript.DespawnOrb();
         }
     }
 }

@@ -46,4 +46,12 @@ public class Orb : MonoBehaviour
         Destroy(newParticles, 1);
     }
 
+    private void OnCollisionEnter2D(Collision2D other) {
+        if (other.gameObject.tag.Equals("Player"))
+        {
+            other.gameObject.GetComponentInChildren<RotatingOrbs>().AddOrb();
+            Destroy(gameObject);
+        }
+    }
+
 }

@@ -8,6 +8,7 @@ using UnityEngine;
 
 public class ArmAiming : MonoBehaviour
 {
+    public PlayerData data;
     public float minAngle = -75f, maxAngle = 75f;
     [Range(-75, 75)]
     public float aimAngle = 0f;
@@ -76,9 +77,13 @@ public class ArmAiming : MonoBehaviour
         }
     }
     public void Throw() {
-        GameObject newBullet = Instantiate(bullet, transform.position, Quaternion.identity);
-        Vector2 angle = new Vector2(Mathf.Cos(aimAngle * Mathf.Deg2Rad), Mathf.Sin(aimAngle * Mathf.Deg2Rad));
-        newBullet.GetComponent<Rigidbody2D>().velocity = angle * force;
+        if (data.currentNumberOfOrbs > 0)
+        {
+            GameObject newBullet = Instantiate(bullet, transform.position, Quaternion.identity);
+            Vector2 angle = new Vector2(Mathf.Cos(aimAngle * Mathf.Deg2Rad), Mathf.Sin(aimAngle * Mathf.Deg2Rad));
+            newBullet.GetComponent<Rigidbody2D>().velocity = angle * force;
+            data.RemoveOrb();
+        }
     }
 
     public void InputAngle(InputAction.CallbackContext context) {

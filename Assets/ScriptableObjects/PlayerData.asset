@@ -12,5 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5113d96d1aa3be123ae711e60974191c, type: 3}
   m_Name: PlayerData
   m_EditorClassIdentifier: 
+  maxNumberOfOrbs: 8
+  currentNumberOfOrbs: 8
+  onOrbRemoved:
+    m_PersistentCalls:
+      m_Calls: []
+  onOrbAdded:
+    m_PersistentCalls:
+      m_Calls: []
+  facingRight: 1
   isAiming: 0
-  maxNumberOfOrbs: 0
